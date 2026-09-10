@@ -70,20 +70,20 @@ todos los valores de duty cycle.
 
 ### 10%
 
-![PWM 10%](images/pwm_10.png)
+![PWM 10%](images/10.jpeg)
 
 ### 30%
 
-![PWM 30%](images/pwm_30.png)
+![PWM 30%](images/30.jpeg)
 
 ### 50%
 
-![PWM 50%](images/pwm_50.png)
+![PWM 50%](images/50.jpeg)
 
 ### 70%
 
-![PWM 70%](images/pwm_70.png)
+![PWM 70%](images/70.jpeg)
 
 ### 90%
 
-![PWM 90%](images/pwm_90.png)
+![PWM 90%](images/90.jpeg)
