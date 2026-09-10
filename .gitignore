@@ -1,0 +1,16 @@
+# Archivos generados por Vivado
+.cache/
+.hw/
+.runs/
+.sim/
+.ip_user_files/
+.Xil/
+
+# Logs y archivos temporales
+*.jou
+*.log
+*.str
+*.wdb
+
+# Archivos temporales de Windows
+Thumbs.db
