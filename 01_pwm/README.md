@@ -43,7 +43,7 @@ El proyecto permite seleccionar:
 
 ## Archivos
 
-```text
+```
 01_pwm/
 ├── fuentes/
 │   ├── pwm.vhdl
@@ -52,6 +52,7 @@ El proyecto permite seleccionar:
 │   └── pwm_arty7.xdc
 └── README.md
 
+```
 ## Medición experimental
 
 La señal PWM fue medida físicamente en la salida JA1 de la
