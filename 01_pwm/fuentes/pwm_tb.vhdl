@@ -1,4 +1,3 @@
-```vhdl
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
@@ -7,139 +6,91 @@ end pwm_tb;
 
 architecture Behavioral of pwm_tb is
 
-    -- Señales para conectar al DUT
-    signal clk     : STD_LOGIC := '0';
-    signal reset   : STD_LOGIC := '1';
-    signal button  : STD_LOGIC := '0';
-    signal pwm_out : STD_LOGIC;
+    signal clk         : STD_LOGIC := '0';
+    signal reset       : STD_LOGIC := '0';
+    signal button_up   : STD_LOGIC := '0';
+    signal button_down : STD_LOGIC := '0';
+    signal button_freq : STD_LOGIC := '0';
+    signal pwm_out     : STD_LOGIC;
 
-    -- Período del reloj
     constant CLK_PERIOD : time := 10 ns;
 
 begin
 
-    ----------------------------------------------------------------
-    -- Instancia del circuito que estamos probando
-    ----------------------------------------------------------------
+    -- Reloj
+    clk <= not clk after CLK_PERIOD/2;
 
+
+    -- Instancia del PWM
     DUT: entity work.pwm
         port map (
-            clk     => clk,
-            reset   => reset,
-            button  => button,
-            pwm_out => pwm_out
+            clk         => clk,
+            reset       => reset,
+            button_up   => button_up,
+            button_down => button_down,
+            button_freq => button_freq,
+            pwm_out     => pwm_out
         );
 
 
-    ----------------------------------------------------------------
-    -- Generador de reloj
-    ----------------------------------------------------------------
-
-    clk_process : process
+    -- Est�mulos
+    process
     begin
 
-        while true loop
-
-            clk <= '0';
-            wait for CLK_PERIOD / 2;
-
-            clk <= '1';
-            wait for CLK_PERIOD / 2;
-
-        end loop;
-
-    end process;
-
-
-    ----------------------------------------------------------------
-    -- Estímulos
-    ----------------------------------------------------------------
-
-    stimulus : process
-    begin
-
-        -- Inicialmente tenemos RESET activo
+        -- Reset
         reset <= '1';
-        button <= '0';
-
-        wait for 50 ns;
-
-
-        -- Quitamos RESET
-        reset <= '0';
-
         wait for 100 ns;
 
-
-        --==========================================================
-        -- PRIMERA PULSACIÓN
-        -- 0% -> 25%
-        --==========================================================
-
-        button <= '1';
-        wait for CLK_PERIOD;
-
-        button <= '0';
-
+        reset <= '0';
         wait for 200 ns;
 
 
-        --==========================================================
-        -- SEGUNDA PULSACIÓN
-        -- 25% -> 50%
-        --==========================================================
+        -- BTN0: aumentar duty
+        button_up <= '1';
+        wait for 100 ns;
+        button_up <= '0';
 
-        button <= '1';
-        wait for CLK_PERIOD;
-
-        button <= '0';
-
-        wait for 200 ns;
+        wait for 1 us;
 
 
-        --==========================================================
-        -- TERCERA PULSACIÓN
-        -- 50% -> 75%
-        --==========================================================
+        -- BTN0 nuevamente
+        button_up <= '1';
+        wait for 100 ns;
+        button_up <= '0';
 
-        button <= '1';
-        wait for CLK_PERIOD;
-
-        button <= '0';
-
-        wait for 200 ns;
+        wait for 1 us;
 
 
-        --==========================================================
-        -- CUARTA PULSACIÓN
-        -- 75% -> 100%
-        --==========================================================
+        -- BTN0 nuevamente
+        button_up <= '1';
+        wait for 100 ns;
+        button_up <= '0';
 
-        button <= '1';
-        wait for CLK_PERIOD;
-
-        button <= '0';
-
-        wait for 200 ns;
+        wait for 1 us;
 
 
-        --==========================================================
-        -- QUINTA PULSACIÓN
-        -- 100% -> 0%
-        --==========================================================
+        -- BTN1: disminuir duty
+        button_down <= '1';
+        wait for 100 ns;
+        button_down <= '0';
 
-        button <= '1';
-        wait for CLK_PERIOD;
-
-        button <= '0';
-
-        wait for 200 ns;
+        wait for 1 us;
 
 
-        -- Fin de los estímulos
+        -- BTN1 nuevamente
+        button_down <= '1';
+        wait for 100 ns;
+        button_down <= '0';
+
+        wait for 1 us;
+
+
+        -- Finalizar simulaci�n
         wait;
 
     end process;
 
 end Behavioral;
-```
+
+
+
