@@ -1,4 +1,3 @@
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
@@ -17,26 +16,46 @@ end pwm;
 architecture Behavioral of pwm is
 
     -- Reloj de la Arty Z7 = 125 MHz
-    -- 125 MHz / 1 kHz = 125000 cuentas
-    constant PERIOD : integer := 100;
+    constant CLK_FREQ : integer := 125000000;
+
+    -- Selección de frecuencia:
+    -- 0 = 1 kHz
+    -- 1 = 2 kHz
+    -- 2 = 5 kHz
+    signal freq_select : integer range 0 to 2 := 0;
+
+    -- Período del PWM
+    signal period : integer range 0 to 125000 := 125000;
 
     -- Contador del PWM
-    signal counter : integer range 0 to PERIOD-1 := 0;
+    signal counter : integer range 0 to 124999 := 0;
 
     -- Duty:
     -- 0  = 0%
     -- 1  = 10%
-    -- 2  = 20%
     -- ...
     -- 10 = 100%
     signal duty_select : integer range 0 to 10 := 0;
 
-    -- Memoria del estado anterior de cada botón
+    -- Memoria de estado anterior de los botones
     signal button_up_old   : STD_LOGIC := '0';
     signal button_down_old : STD_LOGIC := '0';
     signal button_freq_old : STD_LOGIC := '0';
 
 begin
+
+    ------------------------------------------------------------
+    -- SELECCIÓN DEL PERÍODO
+    ------------------------------------------------------------
+
+    period <= 125000 when freq_select = 0 else
+              62500  when freq_select = 1 else
+              25000;
+
+
+    ------------------------------------------------------------
+    -- CONTADOR Y BOTONES
+    ------------------------------------------------------------
 
     process(clk)
     begin
@@ -47,6 +66,7 @@ begin
 
                 counter         <= 0;
                 duty_select     <= 0;
+                freq_select     <= 0;
 
                 button_up_old   <= '0';
                 button_down_old <= '0';
@@ -58,7 +78,7 @@ begin
                 -- CONTADOR PWM
                 ------------------------------------------------
 
-                if counter = PERIOD-1 then
+                if counter >= period - 1 then
                     counter <= 0;
                 else
                     counter <= counter + 1;
@@ -66,7 +86,7 @@ begin
 
 
                 ------------------------------------------------
-                -- BOTON BTN0: AUMENTAR DUTY
+                -- BTN0: AUMENTAR DUTY
                 ------------------------------------------------
 
                 if button_up = '1' and button_up_old = '0' then
@@ -81,7 +101,7 @@ begin
 
 
                 ------------------------------------------------
-                -- BOTON BTN1: DISMINUIR DUTY
+                -- BTN1: DISMINUIR DUTY
                 ------------------------------------------------
 
                 if button_down = '1' and button_down_old = '0' then
@@ -96,14 +116,24 @@ begin
 
 
                 ------------------------------------------------
-                -- BTN2: RESERVADO PARA CAMBIAR FRECUENCIA
+                -- BTN2: CAMBIAR FRECUENCIA
                 ------------------------------------------------
 
-                -- Por ahora no hacemos nada con button_freq.
+                if button_freq = '1' and button_freq_old = '0' then
+
+                    if freq_select = 2 then
+                        freq_select <= 0;
+                    else
+                        freq_select <= freq_select + 1;
+                    end if;
+
+                    counter <= 0;
+
+                end if;
 
 
                 ------------------------------------------------
-                -- GUARDAR ESTADO ANTERIOR DE LOS BOTONES
+                -- GUARDAR ESTADO ANTERIOR
                 ------------------------------------------------
 
                 button_up_old   <= button_up;
@@ -118,34 +148,31 @@ begin
 
 
     ------------------------------------------------------------
-    -- GENERACION DEL PWM
+    -- GENERACIÓN DEL PWM
     ------------------------------------------------------------
 
     pwm_out <= '0' when duty_select = 0 else
 
                '1' when duty_select = 10 else
 
-               '1' when duty_select = 1  and counter < 10 else
+               '1' when duty_select = 1 and counter < period * 1 / 10 else
 
-               '1' when duty_select = 2  and counter < 20 else
+               '1' when duty_select = 2 and counter < period * 2 / 10 else
 
-               '1' when duty_select = 3  and counter < 30 else
+               '1' when duty_select = 3 and counter < period * 3 / 10 else
 
-               '1' when duty_select = 4  and counter < 40 else
+               '1' when duty_select = 4 and counter < period * 4 / 10 else
 
-               '1' when duty_select = 5  and counter <50 else
+               '1' when duty_select = 5 and counter < period * 5 / 10 else
 
-               '1' when duty_select = 6  and counter <60 else
+               '1' when duty_select = 6 and counter < period * 6 / 10 else
 
-               '1' when duty_select = 7  and counter < 70 else
+               '1' when duty_select = 7 and counter < period * 7 / 10 else
 
-               '1' when duty_select = 8  and counter < 80 else
+               '1' when duty_select = 8 and counter < period * 8 / 10 else
 
-               '1' when duty_select = 9  and counter < 90 else
+               '1' when duty_select = 9 and counter < period * 9 / 10 else
 
                '0';
 
 end Behavioral;
-
-
-
