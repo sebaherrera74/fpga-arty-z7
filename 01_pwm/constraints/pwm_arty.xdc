@@ -12,7 +12,7 @@ set_property -dict { PACKAGE_PIN D20 IOSTANDARD LVCMOS33 } [get_ports { button_d
 
 
 ## Button BTN2 - cambia frecuencia
-set_property -dict { PACKAGE_PIN M20 IOSTANDARD LVCMOS33 } [get_ports { button_freq }]
+set_property -dict { PACKAGE_PIN L20 IOSTANDARD LVCMOS33 } [get_ports { button_freq }]
 
 
 ## Button BTN3 - RESET

@@ -13,7 +13,7 @@ architecture Behavioral of pwm_tb is
     signal button_freq : STD_LOGIC := '0';
     signal pwm_out     : STD_LOGIC;
 
-    constant CLK_PERIOD : time := 10 ns;
+    constant CLK_PERIOD : time := 8 ns;
 
 begin
 
@@ -85,8 +85,35 @@ begin
         wait for 1 us;
 
 
-        -- Finalizar simulación
-        wait;
+        -- BTN2: cambiar frecuencia
+                -- 1 kHz -> 2 kHz
+                button_freq <= '1';
+                wait for 100 ns;
+                button_freq <= '0';
+        
+                wait for 100 us;
+        
+        
+                -- BTN2 nuevamente
+                -- 2 kHz -> 5 kHz
+                button_freq <= '1';
+                wait for 100 ns;
+                button_freq <= '0';
+        
+                wait for 100 us;
+        
+        
+                -- BTN2 nuevamente
+                -- 5 kHz -> 1 kHz
+                button_freq <= '1';
+                wait for 100 ns;
+                button_freq <= '0';
+        
+                wait for 100 us;
+        
+        
+                -- Finalizar simulación
+                wait;
 
     end process;
 
